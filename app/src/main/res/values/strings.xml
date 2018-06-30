@@ -3,5 +3,6 @@
     <string name="app_name">StorageApp</string>
     <string name="action_take">Take</string>
     <string name="action_put">Put</string>
+    <string name="barcode_install_prompt_title">Barcode Reader not installed</string>
 
 </resources>

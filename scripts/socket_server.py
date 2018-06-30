@@ -1,14 +1,8 @@
 # server.py
 
-def do_some_stuffs_with_input(input_string):  
-    """
-    This is where all the processing happens.
-
-    Let's just read the string backwards
-    """
-
-    print("Processing that nasty input!")
-    return input_string[::-1]
+def processBarcode(barcode):  
+    # print("Processing that nasty input!")
+    return 'Received scanned barcode: '+ barcode
 
 def client_thread(conn, ip, port, MAX_BUFFER_SIZE = 4096):
 
@@ -25,7 +19,7 @@ def client_thread(conn, ip, port, MAX_BUFFER_SIZE = 4096):
     # decode input and strip the end of line
     input_from_client = input_from_client_bytes.decode("utf8").rstrip()
 
-    res = do_some_stuffs_with_input(input_from_client)
+    res = processBarcode(input_from_client)
     print("Result of processing {} is: {}".format(input_from_client, res))
 
     vysl = res.encode("utf8")  # encode the result string
