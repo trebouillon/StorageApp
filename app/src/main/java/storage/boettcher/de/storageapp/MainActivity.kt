@@ -23,6 +23,17 @@ class MainActivity : AppCompatActivity() {
     setSupportActionBar(toolbar)
 
     take.setOnClickListener { scan() }
+
+    // TODO("implement")
+    put.setOnClickListener { Toast.makeText(this, R.string.action_put, Toast.LENGTH_LONG).show() }
+
+    login.setOnClickListener {
+      Toast.makeText(this, R.string.action_login, Toast.LENGTH_LONG).show()
+    }
+
+    extra.setOnClickListener {
+      Toast.makeText(this, R.string.action_menu, Toast.LENGTH_LONG).show()
+    }
   }
 
   override fun onPause() {
