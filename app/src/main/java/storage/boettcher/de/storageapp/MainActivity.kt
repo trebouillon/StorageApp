@@ -21,9 +21,8 @@ class MainActivity : AppCompatActivity() {
 
         override fun doInBackground(vararg p0: Void?): Void? {
             StorageClient().apply {
-                send()
+                println(send())
             }
-
             return null
         }
     }

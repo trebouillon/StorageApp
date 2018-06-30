@@ -10,11 +10,22 @@ class StorageClient : IStorageClient {
         private const val INET_PORT = 12345
     }
 
-    override fun send() {
+    override fun send(): String {
         val client = Socket(INET_ADDRESS, INET_PORT)
-        client.getOutputStream().bufferedWriter(Charset.forName("UTF-8")).use {
-            it.write("Hallo Martin")
-            it.close()
+        val input = client.getInputStream()
+        val output = client.getOutputStream()
+        
+        try {
+            output.bufferedWriter(Charset.forName("UTF-8")).use {
+                it.write("Hallo Martin")
+                it.flush()
+                return input.bufferedReader(Charset.forName("UTF-8")).readLine()
+            }
+        } catch (e: Exception) {
+            return "error"
+        } finally {
+            output.close()
+            input.close()
             client.close()
         }
     }
