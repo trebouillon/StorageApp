@@ -1,0 +1,22 @@
+package storage.boettcher.de.storageapp.api
+
+import java.net.Socket
+import java.nio.charset.Charset
+
+class StorageClient : IStorageClient {
+
+    companion object {
+        private const val INET_ADDRESS = "192.168.179.28"
+        private const val INET_PORT = 12345
+    }
+
+    override fun send() {
+        val client = Socket(INET_ADDRESS, INET_PORT)
+        client.getOutputStream().bufferedWriter(Charset.forName("UTF-8")).use {
+            it.write("Hallo Martin")
+            it.close()
+            client.close()
+        }
+    }
+
+}
