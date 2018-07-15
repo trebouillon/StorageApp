@@ -108,6 +108,8 @@ class MainActivity : DaggerAppCompatActivity() {
                         scan()
                     } else {
                         scanViewModel.sendBarcode(putItemFirst!!, scanResult.contents)
+                        putItemFirst = null
+                        type = Type.NONE
                     }
                 }
                 else -> {
