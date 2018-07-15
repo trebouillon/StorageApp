@@ -1,19 +1,19 @@
-package storage.boettcher.de.storageapp
+package de.boettcher.storage
 
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import com.google.zxing.integration.android.IntentIntegrator
+import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import storage.boettcher.de.storageapp.api.StorageClient
+import de.boettcher.storage.api.StorageClient
 import java.lang.ref.WeakReference
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : DaggerAppCompatActivity() {
 
   private var dialog: AlertDialog? = null
 
@@ -25,7 +25,8 @@ class MainActivity : AppCompatActivity() {
     take.setOnClickListener { scan() }
 
     // TODO("implement")
-    put.setOnClickListener { Toast.makeText(this, R.string.action_put, Toast.LENGTH_LONG).show() }
+    put.setOnClickListener { Toast.makeText(this,
+      R.string.action_put, Toast.LENGTH_LONG).show() }
 
     login.setOnClickListener {
       Toast.makeText(this, R.string.action_login, Toast.LENGTH_LONG).show()

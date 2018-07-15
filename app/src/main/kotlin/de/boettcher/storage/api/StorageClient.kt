@@ -1,4 +1,4 @@
-package storage.boettcher.de.storageapp.api
+package de.boettcher.storage.api
 
 import java.net.Socket
 import java.nio.charset.Charset

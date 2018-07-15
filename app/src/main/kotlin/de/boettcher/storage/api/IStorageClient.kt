@@ -1,4 +1,4 @@
-package storage.boettcher.de.storageapp.api
+package de.boettcher.storage.api
 
 interface IStorageClient {
 
