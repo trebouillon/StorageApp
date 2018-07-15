@@ -19,19 +19,27 @@ class MainActivity : DaggerAppCompatActivity() {
     lateinit var scanViewModel: ScanViewModel
     private lateinit var viewStateDisposable: Disposable
 
+    // TODO("quick'n'dirty" -> DELETE ^^)
+    enum class Type {
+        TAKE, PUT, NONE
+    }
+
+    var type = Type.NONE
+    var putItemFirst: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        take.setOnClickListener { scan() }
+        take.setOnClickListener {
+            type = Type.TAKE
+            scan()
+        }
 
-        // TODO("implement")
         put.setOnClickListener {
-            Toast.makeText(
-                this,
-                R.string.action_put, Toast.LENGTH_LONG
-            ).show()
+            type = Type.PUT
+            scan()
         }
 
         login.setOnClickListener {
@@ -88,7 +96,23 @@ class MainActivity : DaggerAppCompatActivity() {
         val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
 
         scanResult?.let {
-            scanViewModel.sendBarcode(scanResult.contents)
+
+            when (type) {
+                Type.TAKE -> {
+                    scanViewModel.sendBarcode(scanResult.contents)
+                    type = Type.NONE
+                }
+                Type.PUT -> {
+                    if (putItemFirst == null) {
+                        putItemFirst = scanResult.contents
+                        scan()
+                    } else {
+                        scanViewModel.sendBarcode(putItemFirst!!, scanResult.contents)
+                    }
+                }
+                else -> {
+                }
+            }
         }
 
         super.onActivityResult(requestCode, resultCode, data)

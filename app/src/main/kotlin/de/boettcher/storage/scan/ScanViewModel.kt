@@ -20,8 +20,8 @@ class ScanViewModel @Inject constructor(private val sendBarcodeInteractor: ISend
             .subscribeOn(AndroidSchedulers.mainThread())
     }
 
-    fun sendBarcode(code: String) {
-        sendBarcodeInteractor.send(createBarcode(code)).observeOn(AndroidSchedulers.mainThread())
+    fun sendBarcode(vararg codes: String) {
+        sendBarcodeInteractor.send(createBarcode(*codes)).observeOn(AndroidSchedulers.mainThread())
             .subscribe(onSuccess(), onError())
     }
 
@@ -37,17 +37,31 @@ class ScanViewModel @Inject constructor(private val sendBarcodeInteractor: ISend
     private fun onSuccess(): Consumer<String> =
         Consumer { viewStateSubject.onNext(ScanViewState.Success(it)) }
 
-    private fun createBarcode(code: String): BarcodeData {
-        return BarcodeData(
-            scanType = ScanType.TAKE,
-            userId = "tre",
-            barcodes = listOf(
-                Barcode(
-                    storageType = StorageType.ITEM,
-                    code = code.toLong()
-                )
+    private fun createBarcode(vararg codes: String): BarcodeData {
+        val scanType = when (codes.size) {
+            1 -> ScanType.TAKE
+            2 -> ScanType.PUT
+            else -> throw IllegalStateException("invalid size")
+        }
+
+        val barcodes = codes.map {
+            Barcode(
+                storageType = checkStorageType(it),
+                code = it.toLong()
             )
+        }
+
+        return BarcodeData(
+            scanType = scanType,
+            userId = "tre",
+            barcodes = barcodes
         )
+    }
+
+    // TODO("implement validator")
+    private fun checkStorageType(code: String): StorageType {
+        if (code.startsWith("0") || code.startsWith("1")) return StorageType.ITEM
+        return StorageType.STORE
     }
 
 }
