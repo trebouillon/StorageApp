@@ -5,7 +5,7 @@ import android.content.Context
 import dagger.Binds
 import dagger.Module
 
-@Module
+@Module(includes = [BarcodeModule::class])
 abstract class ApplicationModule {
 
     @Binds

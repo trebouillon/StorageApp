@@ -36,7 +36,7 @@ def start_server():
     print('Socket created')
 
     try:
-        soc.bind(("192.168.179.28", 12345))
+        soc.bind(("192.168.178.43", 12345))
         print('Socket bind complete')
     except socket.error as msg:
         import sys
