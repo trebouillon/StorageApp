@@ -16,7 +16,7 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".scan.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">

@@ -1,4 +1,4 @@
-package de.boettcher.storage.di
+package de.boettcher.storage.scan
 
 import dagger.Module
 import dagger.Provides
@@ -12,6 +12,12 @@ import javax.inject.Singleton
 
 @Module
 class BarcodeModule {
+
+    @Singleton
+    @Provides
+    internal fun provideScanViewModel(sendBarcodeInteractor: ISendBarcodeInteractor): ScanViewModel {
+        return ScanViewModel(sendBarcodeInteractor)
+    }
 
     @Singleton
     @Provides

@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import dagger.Binds
 import dagger.Module
+import de.boettcher.storage.scan.BarcodeModule
 
 @Module(includes = [BarcodeModule::class])
 abstract class ApplicationModule {
