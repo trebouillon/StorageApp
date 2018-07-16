@@ -20,9 +20,32 @@ class ScanViewModel @Inject constructor(private val sendBarcodeInteractor: ISend
             .subscribeOn(AndroidSchedulers.mainThread())
     }
 
+    // TODO("will be cleaned up later - just a quick solution")
     fun sendBarcode(vararg codes: String) {
-        sendBarcodeInteractor.send(createBarcode(*codes)).observeOn(AndroidSchedulers.mainThread())
-            .subscribe(onSuccess(), onError())
+        if (codes.size == 1) {
+            sendBarcodeInteractor.getUserToken().doOnSuccess {
+                sendBarcodeInteractor.send(createBarcode(it, *codes))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(onSuccess(), onError())
+            }.observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete { viewStateSubject.onNext(ScanViewState.NoToken) }
+                .subscribe()
+        } else {
+            sendBarcodeInteractor.send(createBarcode(codes = *codes))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(onSuccess(), onError())
+        }
+    }
+
+    fun saveUserToken(token: String) {
+        sendBarcodeInteractor.saveUserToken(token).observeOn(AndroidSchedulers.mainThread())
+            .doOnComplete { viewStateSubject.onNext(ScanViewState.TokenSaved) }
+            .subscribe()
+    }
+
+    // TODO("remove")
+    fun resetState() {
+        viewStateSubject.onNext(ScanViewState.None)
     }
 
     private fun onError(): Consumer<in Throwable>? =
@@ -37,7 +60,7 @@ class ScanViewModel @Inject constructor(private val sendBarcodeInteractor: ISend
     private fun onSuccess(): Consumer<String> =
         Consumer { viewStateSubject.onNext(ScanViewState.Success(it)) }
 
-    private fun createBarcode(vararg codes: String): BarcodeData {
+    private fun createBarcode(userToken: String? = null, vararg codes: String): BarcodeData {
         val scanType = when (codes.size) {
             1 -> ScanType.TAKE
             2 -> ScanType.PUT
@@ -53,7 +76,7 @@ class ScanViewModel @Inject constructor(private val sendBarcodeInteractor: ISend
 
         return BarcodeData(
             scanType = scanType,
-            userId = "tre",
+            userId = userToken,
             barcodes = barcodes
         )
     }

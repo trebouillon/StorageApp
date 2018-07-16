@@ -8,6 +8,6 @@ import de.boettcher.storage.scan.MainActivity
 abstract class ActivityInjectionModule {
 
     @ContributesAndroidInjector
-    internal abstract fun contributeSplashActivityInjector(): MainActivity
+    internal abstract fun contributeMainActivityInjector(): MainActivity
 
 }

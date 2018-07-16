@@ -6,5 +6,8 @@
     <string name="action_menu">"Open Menu"</string>
     <string name="action_login">"Change User"</string>
     <string name="barcode_install_prompt_title">"Barcode Reader not installed"</string>
+    <string name="no_user_token">"No User Token specified"</string>
+    <string name="dialog_login_title">"Enter your User Id"</string>
+    <string name="dialog_login_ok">"Send"</string>
 
 </resources>
