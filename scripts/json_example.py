@@ -3,7 +3,6 @@
 import json
 
 barcodeData = '{"barcodes":[{"code":9780596007127,"storageType":"STORE"},{"code":9780596007126,"storageType":"ITEM"}],"scanType":"PUT","userId":"tre"}'
-
 data = json.loads(barcodeData)
 print ('userId = ' +  data['userId'])
 print ('scanType = ' + data['scanType'])

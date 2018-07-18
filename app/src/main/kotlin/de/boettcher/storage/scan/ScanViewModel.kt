@@ -70,7 +70,7 @@ class ScanViewModel @Inject constructor(private val sendBarcodeInteractor: ISend
         val barcodes = codes.map {
             Barcode(
                 storageType = checkStorageType(it),
-                code = it.toLong()
+                code = it
             )
         }
 
