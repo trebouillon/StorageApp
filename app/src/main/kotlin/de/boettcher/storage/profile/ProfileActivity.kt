@@ -33,8 +33,10 @@ class ProfileActivity : DaggerAppCompatActivity() {
         binding.viewModel = this.viewModel
 
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.let {
+            it.setDisplayShowHomeEnabled(true)
+            it.setDisplayHomeAsUpEnabled(true)
+        }
 
         viewModel.onCreate()
     }
