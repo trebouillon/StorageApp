@@ -1,25 +1,20 @@
 package de.boettcher.storage.scan
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.widget.EditText
 import android.widget.Toast
 import com.google.zxing.integration.android.IntentIntegrator
 import dagger.android.support.DaggerAppCompatActivity
 import de.boettcher.storage.R
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
-import javax.inject.Inject
 
 class MainActivity : DaggerAppCompatActivity() {
 
     private var dialog: AlertDialog? = null
-    @Inject
-    lateinit var scanViewModel: ScanViewModel
+    //    @Inject
+//    lateinit var scanViewModel: ScanViewModel
     private lateinit var viewStateDisposable: Disposable
 
     // TODO("quick'n'dirty" -> DELETE ^^)
@@ -35,38 +30,38 @@ class MainActivity : DaggerAppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        take.setOnClickListener {
-            type = Type.TAKE
-            scan()
-        }
-
-        put.setOnClickListener {
-            type = Type.PUT
-            scan()
-        }
-
-        login.setOnClickListener {
-            login()
-        }
-
-        extra.setOnClickListener {
-            Toast.makeText(this, R.string.action_menu, Toast.LENGTH_LONG).show()
-        }
-
-        viewStateDisposable = scanViewModel.observe().subscribe(
-            { onScanViewStateChange(it) },
-            { Toast.makeText(this, it.message, Toast.LENGTH_LONG).show() }
-        )
+//        take.setOnClickListener {
+//            type = Type.TAKE
+//            scan()
+//        }
+//
+//        put.setOnClickListener {
+//            type = Type.PUT
+//            scan()
+//        }
+//
+//        login.setOnClickListener {
+//            login()
+//        }
+//
+//        extra.setOnClickListener {
+//            Toast.makeText(this, R.string.action_menu, Toast.LENGTH_LONG).show()
+//        }
+//
+//        viewStateDisposable = scanViewModel.observe().subscribe(
+//            { onScanViewStateChange(it) },
+//            { Toast.makeText(this, it.message, Toast.LENGTH_LONG).show() }
+//        )
     }
 
     private fun onScanViewStateChange(scanViewState: ScanViewState) {
         when (scanViewState) {
             is ScanViewState.Success -> showToastMessage(scanViewState.result)
             is ScanViewState.Error -> showToastMessage(scanViewState.message)
-            is ScanViewState.NoToken -> {
-                showToastMessage(getString(R.string.no_user_token))
-                scanViewModel.resetState()
-            }
+//            is ScanViewState.NoToken -> {
+//                showToastMessage(getString(R.string.no_user_token))
+//                scanViewModel.resetState()
+//            }
         }
     }
 
@@ -102,29 +97,29 @@ class MainActivity : DaggerAppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
 
-        scanResult?.let {
-
-            scanResult.contents?.let {
-                when (type) {
-                    Type.TAKE -> {
-                        scanViewModel.sendBarcode(scanResult.contents)
-                        type = Type.NONE
-                    }
-                    Type.PUT -> {
-                        if (putItemFirst == null) {
-                            putItemFirst = scanResult.contents
-                            scan()
-                        } else {
-                            scanViewModel.sendBarcode(putItemFirst!!, scanResult.contents)
-                            putItemFirst = null
-                            type = Type.NONE
-                        }
-                    }
-                    else -> {
-                    }
-                }
-            }
-        }
+//        scanResult?.let {
+//
+//            scanResult.contents?.let {
+//                when (type) {
+//                    Type.TAKE -> {
+//                        scanViewModel.sendBarcode(scanResult.contents)
+//                        type = Type.NONE
+//                    }
+//                    Type.PUT -> {
+//                        if (putItemFirst == null) {
+//                            putItemFirst = scanResult.contents
+//                            scan()
+//                        } else {
+//                            scanViewModel.sendBarcode(putItemFirst!!, scanResult.contents)
+//                            putItemFirst = null
+//                            type = Type.NONE
+//                        }
+//                    }
+//                    else -> {
+//                    }
+//                }
+//            }
+//        }
 
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -136,21 +131,21 @@ class MainActivity : DaggerAppCompatActivity() {
         dialog = integrator.initiateScan(android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK)
     }
 
-    @SuppressLint("InflateParams")
-    private fun login() {
-        val content = LayoutInflater.from(this).inflate(R.layout.dialog_login, null)
-
-        val builder = AlertDialog.Builder(this).setView(content)
-            .setPositiveButton(
-                R.string.dialog_login_ok
-            ) { _, _ ->
-                scanViewModel.saveUserToken(content.findViewById<EditText>(R.id.user_token_input).text.toString())
-                dialog?.let {
-                    dialog!!.dismiss()
-                }
-            }
-
-
-        dialog = builder.show()
-    }
+//    @SuppressLint("InflateParams")
+//    private fun login() {
+//        val content = LayoutInflater.from(this).inflate(R.layout.dialog_login, null)
+//
+//        val builder = AlertDialog.Builder(this).setView(content)
+//            .setPositiveButton(
+//                R.string.dialog_login_ok
+//            ) { _, _ ->
+//                scanViewModel.saveUserToken(content.findViewById<EditText>(R.id.user_token_input).text.toString())
+//                dialog?.let {
+//                    dialog!!.dismiss()
+//                }
+//            }
+//
+//
+//        dialog = builder.show()
+//    }
 }

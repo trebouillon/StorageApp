@@ -2,8 +2,9 @@ package de.boettcher.storage.api
 
 import java.net.Socket
 import java.nio.charset.Charset
+import javax.inject.Inject
 
-class StorageClient : IStorageClient {
+class StorageClient @Inject constructor() : IStorageClient {
 
     private val charset = Charset.forName("UTF-8")
 
