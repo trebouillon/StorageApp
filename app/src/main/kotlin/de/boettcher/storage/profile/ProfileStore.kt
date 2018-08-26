@@ -15,7 +15,13 @@ class ProfileStore @Inject constructor(
 ) : BaseStore<ProfileState>(ProfileState.LoggedOut), IProfileStore {
 
     override fun initialize() {
-        val initState = object : RecreateStateFunction<ProfileState> {
+        val initState = getInitState()
+
+        buildState(initState, getErrorState())
+    }
+
+    private fun getInitState(): RecreateStateFunction<ProfileState> {
+        return object : RecreateStateFunction<ProfileState> {
 
             override fun recreate(stateProvider: StateProvider<ProfileState>): Observable<ProfileState> {
                 return Observable.fromCallable<ProfileState> {
@@ -28,8 +34,19 @@ class ProfileStore @Inject constructor(
             }
 
         }
+    }
 
-        buildState(initState, getErrorState())
+    private fun getErrorState(): RecreateStateFunctionOnError<ProfileState> {
+        return object : RecreateStateFunctionOnError<ProfileState> {
+
+            override fun recreate(
+                stateProvider: StateProvider<ProfileState>,
+                throwable: Throwable
+            ): Observable<ProfileState> {
+                return Observable.just(ProfileState.Error)
+            }
+
+        }
     }
 
     override fun login(userId: String) {
@@ -45,19 +62,6 @@ class ProfileStore @Inject constructor(
                     saveUserTokenInteractor.saveUserToken(userId).blockingAwait()
                     ProfileState.LoggedIn(userId)
                 }
-            }
-
-        }
-    }
-
-    private fun getErrorState(): RecreateStateFunctionOnError<ProfileState> {
-        return object : RecreateStateFunctionOnError<ProfileState> {
-
-            override fun recreate(
-                stateProvider: StateProvider<ProfileState>,
-                throwable: Throwable
-            ): Observable<ProfileState> {
-                return Observable.just(ProfileState.LoggedOut)
             }
 
         }
