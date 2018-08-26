@@ -9,13 +9,12 @@ import dagger.Provides
 import de.boettcher.storage.api.IStorageClient
 import de.boettcher.storage.api.StorageClient
 import de.boettcher.storage.repository.AccountRepository
-import de.boettcher.storage.repository.BarcodeRepository
 import de.boettcher.storage.repository.IAccountRepository
-import de.boettcher.storage.repository.IBarcodeRepository
-import de.boettcher.storage.scan.BarcodeModule
+import de.boettcher.storage.repository.IScanRepository
+import de.boettcher.storage.repository.ScanRepository
 import javax.inject.Singleton
 
-@Module(includes = [BarcodeModule::class])
+@Module
 abstract class ApplicationModule {
 
     @Binds
@@ -27,7 +26,7 @@ abstract class ApplicationModule {
 
     @Singleton
     @Binds
-    abstract fun bindBarcodeRepository(barcodeRepository: BarcodeRepository): IBarcodeRepository
+    abstract fun bindBarcodeRepository(barcodeRepository: ScanRepository): IScanRepository
 
     @Singleton
     @Binds

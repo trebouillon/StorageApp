@@ -3,8 +3,9 @@ package de.boettcher.storage.ui
 import android.content.Context
 import android.support.annotation.StringRes
 import android.widget.Toast
+import javax.inject.Inject
 
-class ToastDisplayer(private val context: Context) {
+class ToastDisplayer @Inject constructor(private val context: Context) {
 
     fun showMessageShort(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
