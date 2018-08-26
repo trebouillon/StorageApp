@@ -8,4 +8,6 @@ sealed class ProfileState : IState {
 
     object LoggedOut : ProfileState()
 
+    object Error : ProfileState()
+
 }
