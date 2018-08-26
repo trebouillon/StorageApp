@@ -5,7 +5,3 @@ data class BarcodeData(
     val userId: String? = null,
     val barcodes: List<Barcode>
 )
-
-enum class ScanType {
-    TAKE, PUT
-}
