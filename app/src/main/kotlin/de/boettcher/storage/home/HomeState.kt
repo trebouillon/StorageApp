@@ -8,12 +8,8 @@ sealed class HomeState : IState {
 
     object Default : HomeState()
 
-    data class Error(val type: ErrorType) : HomeState()
+    object Error : HomeState()
 
     data class Scan(val barcodes: List<Barcode>, val scanType: ScanType) : HomeState()
 
-}
-
-enum class ErrorType {
-    NO_CONNECTION, GENERAL, AUTHENTICATION_FAILED
 }

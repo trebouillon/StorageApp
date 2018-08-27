@@ -10,12 +10,13 @@ import de.boettcher.storage.ui.view.BarcodeBoxView
 
 class BindingAdapters {
 
-    @BindingAdapter("visibility")
-    fun View.visible(visible: Boolean) {
-        this.visibility = if (visible) View.VISIBLE else View.GONE
-    }
-
     companion object {
+
+        @JvmStatic
+        @BindingAdapter("visibility")
+        fun View.visible(visible: Boolean) {
+            this.visibility = if (visible) View.VISIBLE else View.GONE
+        }
 
         @BindingAdapter("createSurface", "destroySurface")
         @JvmStatic

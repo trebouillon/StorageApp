@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(
     private val homeStore: IHomeStore,
-    private val navigator: HomeNavigator
+    private val navigator: IHomeNavigator
 ) {
 
     private val disposable = CompositeDisposable()
@@ -19,16 +19,16 @@ class HomeViewModel @Inject constructor(
         }, AndroidSchedulers.mainThread()))
     }
 
-    fun startScan() {
-        navigator.scanBarcode()
+    fun take() {
+        navigator.startTakeScan()
+    }
+
+    fun put() {
+        navigator.startPutScan()
     }
 
     fun onLoginClicked() {
         navigator.login()
-    }
-
-    fun sendBarcode(value: String) {
-        homeStore.sendBarcode(value)
     }
 
 }
