@@ -6,4 +6,5 @@ interface IScanNavigator {
 
     fun onSurfaceDestroyed()
 
+    fun finish()
 }

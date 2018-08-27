@@ -41,7 +41,7 @@
                 android:id="@+id/take"
                 android:layout_height="0dp"
                 android:layout_width="match_parent"
-                android:onClick="@{() -> viewModel.startScan()}"
+                android:onClick="@{() -> viewModel.take()}"
                 android:text="@string/action_take"
                 android:textSize="30sp"
                 android:textStyle="bold"

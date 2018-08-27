@@ -15,6 +15,7 @@ import dagger.android.support.DaggerAppCompatActivity
 import de.boettcher.storage.R
 import de.boettcher.storage.databinding.ActivityScanBinding
 import de.boettcher.storage.model.BoundingBox
+import de.boettcher.storage.model.ScanType
 import kotlinx.android.synthetic.main.activity_scan.*
 import javax.inject.Inject
 
@@ -22,8 +23,11 @@ class ScanActivity : DaggerAppCompatActivity(), IScanNavigator {
 
     companion object {
 
-        fun startActivity(activity: Activity) {
+        private const val EXTRA_SCAN_TYPE = "extra.scan.type"
+
+        fun startActivity(activity: Activity, scanType: ScanType) {
             val intent = Intent(activity, ScanActivity::class.java)
+            intent.putExtra(EXTRA_SCAN_TYPE, scanType.name)
             activity.startActivity(intent)
         }
 
@@ -47,6 +51,7 @@ class ScanActivity : DaggerAppCompatActivity(), IScanNavigator {
             it.setDisplayHomeAsUpEnabled(true)
         }
 
+        viewModel.start(ScanType.valueOf(intent.getStringExtra(EXTRA_SCAN_TYPE)))
         initBarcodeDetector()
     }
 
