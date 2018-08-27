@@ -5,6 +5,8 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
 import de.boettcher.storage.functional.Function
+import de.boettcher.storage.model.BoundingBox
+import de.boettcher.storage.ui.view.BarcodeBoxView
 
 class BindingAdapters {
 
@@ -33,6 +35,18 @@ class BindingAdapters {
                 }
 
             })
+        }
+
+        @BindingAdapter("boundingBox")
+        @JvmStatic
+        fun BarcodeBoxView.show(boundingBox: BoundingBox?) {
+            visibility = View.GONE
+
+            boundingBox?.let {
+                setBoundingBox(it)
+                postInvalidate()
+                visibility = View.VISIBLE
+            }
         }
 
     }
