@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.util.SparseArray
 import android.view.MenuItem
 import com.google.android.gms.vision.CameraSource
 import com.google.android.gms.vision.Detector
@@ -13,7 +14,7 @@ import com.google.android.gms.vision.barcode.BarcodeDetector
 import dagger.android.support.DaggerAppCompatActivity
 import de.boettcher.storage.R
 import de.boettcher.storage.databinding.ActivityScanBinding
-import de.boettcher.storage.utils.RequestCodeUtils
+import de.boettcher.storage.model.BoundingBox
 import kotlinx.android.synthetic.main.activity_scan.*
 import javax.inject.Inject
 
@@ -23,7 +24,7 @@ class ScanActivity : DaggerAppCompatActivity(), IScanNavigator {
 
         fun startActivity(activity: Activity) {
             val intent = Intent(activity, ScanActivity::class.java)
-            activity.startActivityForResult(intent, RequestCodeUtils.REQUEST_CODE_SCAN)
+            activity.startActivity(intent)
         }
 
     }
@@ -51,7 +52,9 @@ class ScanActivity : DaggerAppCompatActivity(), IScanNavigator {
 
     private fun initCameraSource() {
         cameraSource = CameraSource.Builder(this, barcodeDetector)
-            .setRequestedPreviewSize(1920, 1080)
+            .setFacing(CameraSource.CAMERA_FACING_BACK)
+            .setRequestedPreviewSize(ScanUtils.PREVIEW_WIDTH, ScanUtils.PREVIEW_HEIGHT)
+            .setRequestedFps(15.0f)
             .setAutoFocusEnabled(true)
             .build()
     }
@@ -69,11 +72,20 @@ class ScanActivity : DaggerAppCompatActivity(), IScanNavigator {
 
             override fun receiveDetections(detection: Detector.Detections<Barcode>?) {
                 detection?.let {
+                    detectAndSendBarcode(it)
+                }
+            }
 
-                    if (it.detectedItems.size() == 1) {
-                        viewModel.sendBarcodeData(it.detectedItems.valueAt(0).displayValue)
-                    }
-
+            fun detectAndSendBarcode(detections: Detector.Detections<Barcode>): SparseArray<Barcode>? {
+                return detections.detectedItems.takeIf {
+                    it.size() == 1
+                }?.apply {
+                    viewModel.sendBarcode(
+                        BoundingBox(
+                            cameraSource?.previewSize,
+                            valueAt(0)
+                        )
+                    )
                 }
             }
 
