@@ -128,7 +128,7 @@ class ScanActivity : DaggerAppCompatActivity(), IScanNavigator {
         cameraSource?.stop()
     }
 
-    override fun onBarcodeSend() {
+    override fun close() {
         finish()
     }
 

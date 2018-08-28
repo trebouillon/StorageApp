@@ -6,5 +6,5 @@ interface IScanNavigator {
 
     fun onSurfaceDestroyed()
 
-    fun onBarcodeSend()
+    fun close()
 }

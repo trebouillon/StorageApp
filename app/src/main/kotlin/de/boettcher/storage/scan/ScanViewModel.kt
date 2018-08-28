@@ -3,8 +3,10 @@ package de.boettcher.storage.scan
 import android.content.res.Resources
 import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
+import android.support.annotation.StringRes
 import de.boettcher.storage.R
 import de.boettcher.storage.model.BoundingBox
+import de.boettcher.storage.model.ErrorType
 import de.boettcher.storage.utils.TextUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -20,7 +22,9 @@ class ScanViewModel @Inject constructor(
     val barcodeArea = ObservableField<BoundingBox>()
     val isOperational = ObservableBoolean(false)
     val isAcceptBarcode = ObservableBoolean(false)
+    val isError = ObservableBoolean(false)
     val scanHint = ObservableField<String>(TextUtils.EMPTY)
+    val errorMessage = ObservableField<String>(TextUtils.EMPTY)
     private val disposable = CompositeDisposable()
 
     fun onSurfaceCreated() {
@@ -46,19 +50,37 @@ class ScanViewModel @Inject constructor(
             scanStore.subscribe(Consumer {
 
                 when (it) {
-                    is ScanState.Idle -> isOperational.set(false)
+                    is ScanState.Idle -> updateIdleState()
                     is ScanState.Take -> updateTakeState()
                     is ScanState.Put -> updatePutState(it.barcode)
-                    is ScanState.Error -> isOperational.set(false)
-                    is ScanState.Finish -> scanNavigator.onBarcodeSend()
+                    is ScanState.Error -> updateErrorState(it)
+                    is ScanState.Finish -> scanNavigator.close()
                 }
 
             }, AndroidSchedulers.mainThread())
         )
     }
 
+    private fun updateErrorState(it: ScanState.Error) {
+        isError.set(true)
+        isOperational.set(false)
+
+        @StringRes val message = when (it.errorType) {
+            ErrorType.GENERAL -> R.string.scan_error_general
+            ErrorType.NO_CONNECTION -> R.string.scan_error_network
+            ErrorType.AUTHENTICATION_FAILED -> R.string.scan_error_authentication
+        }
+        errorMessage.set(resources.getString(message))
+    }
+
+    private fun updateIdleState() {
+        isOperational.set(false)
+        isError.set(false)
+    }
+
     private fun updatePutState(barcode: String?) {
         isOperational.set(true)
+        isError.set(false)
         val scans = when (barcode) {
             null -> 1
             else -> 2
@@ -68,6 +90,7 @@ class ScanViewModel @Inject constructor(
 
     private fun updateTakeState() {
         isOperational.set(true)
+        isError.set(false)
         scanHint.set(resources.getString(R.string.scan_hint, 1, 1))
     }
 
@@ -84,6 +107,10 @@ class ScanViewModel @Inject constructor(
 
     fun onDestroy() {
         disposable.dispose()
+    }
+
+    fun close() {
+        scanNavigator.close()
     }
 
 }
