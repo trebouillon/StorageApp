@@ -17,5 +17,10 @@
     <string name="unknown_error">"An unknown error has occurred."</string>
     <string name="activity_scan">"Barcode Scan"</string>
     <string name="scan_hint">"Scan [%1$d / %2$d]"</string>
+    <string name="scan_error_title">"Scan Error"</string>
+    <string name="scan_error_close">"Close"</string>
+    <string name="scan_error_general">"An unknown error has occurred."</string>
+    <string name="scan_error_network">"You have no internet connection. Please check your settings."</string>
+    <string name="scan_error_authentication">"You are not logged in. Please enter your userId first on profile page."</string>
 
 </resources>
