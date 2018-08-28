@@ -5,7 +5,6 @@ import android.os.Bundle
 import dagger.android.support.DaggerAppCompatActivity
 import de.boettcher.storage.R
 import de.boettcher.storage.databinding.ActivityHomeBinding
-import de.boettcher.storage.model.ScanType
 import de.boettcher.storage.profile.ProfileActivity
 import de.boettcher.storage.scan.ScanActivity
 import kotlinx.android.synthetic.main.activity_home.*
@@ -29,11 +28,11 @@ class HomeActivity : DaggerAppCompatActivity(), IHomeNavigator {
     }
 
     override fun startTakeScan() {
-        ScanActivity.startActivity(this, ScanType.TAKE)
+        ScanActivity.startTakeScan(this)
     }
 
     override fun startPutScan() {
-        ScanActivity.startActivity(this, ScanType.PUT)
+        ScanActivity.startPutScan(this)
     }
 
     override fun login() {
