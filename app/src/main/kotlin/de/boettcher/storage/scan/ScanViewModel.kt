@@ -1,21 +1,25 @@
 package de.boettcher.storage.scan
 
+import android.content.res.Resources
 import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
+import de.boettcher.storage.R
 import de.boettcher.storage.model.BoundingBox
-import de.boettcher.storage.model.ScanType
+import de.boettcher.storage.utils.TextUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
 import javax.inject.Inject
 
 class ScanViewModel @Inject constructor(
     private val scanStore: IScanStore,
-    private val scanNavigator: IScanNavigator
+    private val scanNavigator: IScanNavigator,
+    private val resources: Resources
 ) {
 
     val barcodeArea = ObservableField<BoundingBox>()
     val isOperational = ObservableBoolean(false)
     val isAcceptBarcode = ObservableBoolean(false)
+    val scanHint = ObservableField<String>(TextUtils.EMPTY)
 
     fun onSurfaceCreated() {
         scanNavigator.onSurfaceCreated()
@@ -25,23 +29,33 @@ class ScanViewModel @Inject constructor(
         scanNavigator.onSurfaceDestroyed()
     }
 
-    fun start(scanType: ScanType) {
+    fun startTake() {
+        initializeStore()
+        scanStore.take()
+    }
+
+    fun startPut() {
+        initializeStore()
+        scanStore.put()
+    }
+
+    private fun initializeStore() {
         scanStore.subscribe(Consumer {
 
             when (it) {
                 is ScanState.Idle -> isOperational.set(false)
-                is ScanState.Take -> isOperational.set(true)
+                is ScanState.Take -> updateTakeState()
                 is ScanState.Put -> isOperational.set(true)
                 is ScanState.Error -> isOperational.set(false)
                 is ScanState.Finish -> scanNavigator.onBarcodeSend()
             }
 
         }, AndroidSchedulers.mainThread())
+    }
 
-        when (scanType) {
-            ScanType.TAKE -> scanStore.take()
-            ScanType.PUT -> scanStore.put()
-        }
+    private fun updateTakeState() {
+        isOperational.set(true)
+        scanHint.set(resources.getString(R.string.scan_hint, 1, 1))
     }
 
     fun displayBoundingBox(boundingBox: BoundingBox) {

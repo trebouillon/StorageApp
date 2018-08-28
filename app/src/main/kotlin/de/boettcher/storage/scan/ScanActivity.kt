@@ -15,7 +15,6 @@ import dagger.android.support.DaggerAppCompatActivity
 import de.boettcher.storage.R
 import de.boettcher.storage.databinding.ActivityScanBinding
 import de.boettcher.storage.model.BoundingBox
-import de.boettcher.storage.model.ScanType
 import kotlinx.android.synthetic.main.activity_scan.*
 import javax.inject.Inject
 
@@ -24,10 +23,18 @@ class ScanActivity : DaggerAppCompatActivity(), IScanNavigator {
     companion object {
 
         private const val EXTRA_SCAN_TYPE = "extra.scan.type"
+        private const val EXTRA_SCAN_TYPE_TAKE = "extra.scan.type.take"
+        private const val EXTRA_SCAN_TYPE_PUT = "extra.scan.type.put"
 
-        fun startActivity(activity: Activity, scanType: ScanType) {
+        fun startTakeScan(activity: Activity) {
             val intent = Intent(activity, ScanActivity::class.java)
-            intent.putExtra(EXTRA_SCAN_TYPE, scanType.name)
+            intent.putExtra(EXTRA_SCAN_TYPE, EXTRA_SCAN_TYPE_TAKE)
+            activity.startActivity(intent)
+        }
+
+        fun startPutScan(activity: Activity) {
+            val intent = Intent(activity, ScanActivity::class.java)
+            intent.putExtra(EXTRA_SCAN_TYPE, EXTRA_SCAN_TYPE_PUT)
             activity.startActivity(intent)
         }
 
@@ -51,7 +58,11 @@ class ScanActivity : DaggerAppCompatActivity(), IScanNavigator {
             it.setDisplayHomeAsUpEnabled(true)
         }
 
-        viewModel.start(ScanType.valueOf(intent.getStringExtra(EXTRA_SCAN_TYPE)))
+        when (intent.getStringExtra(EXTRA_SCAN_TYPE)) {
+            EXTRA_SCAN_TYPE_TAKE -> viewModel.startTake()
+            EXTRA_SCAN_TYPE_PUT -> viewModel.startPut()
+        }
+        
         initBarcodeDetector()
     }
 

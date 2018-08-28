@@ -16,5 +16,6 @@
     <string name="profile_logged_in">"You are currently logged in as: &quot;%1$s&quot;"</string>
     <string name="unknown_error">"An unknown error has occurred."</string>
     <string name="activity_scan">"Barcode Scan"</string>
+    <string name="scan_hint">"Scan [%1$d / %2$d]"</string>
 
 </resources>
