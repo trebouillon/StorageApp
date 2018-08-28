@@ -9,6 +9,7 @@ import de.boettcher.storage.model.ScanType
 import de.boettcher.storage.store.BaseStore
 import de.boettcher.storage.utils.resolveStorageType
 import io.reactivex.Observable
+import java.net.SocketException
 import javax.inject.Inject
 
 class ScanStore @Inject constructor(
@@ -55,8 +56,11 @@ class ScanStore @Inject constructor(
                 stateProvider: StateProvider<ScanState>,
                 throwable: Throwable
             ): Observable<ScanState> {
-                // todo check throwable
-                return Observable.just(ScanState.Error(ErrorType.GENERAL))
+                val errorType = when (throwable) {
+                    is SocketException -> ErrorType.NO_CONNECTION
+                    else -> ErrorType.GENERAL
+                }
+                return Observable.just(ScanState.Error(errorType))
             }
         }
     }

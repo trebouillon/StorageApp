@@ -62,7 +62,7 @@ class ScanActivity : DaggerAppCompatActivity(), IScanNavigator {
             EXTRA_SCAN_TYPE_TAKE -> viewModel.startTake()
             EXTRA_SCAN_TYPE_PUT -> viewModel.startPut()
         }
-        
+
         initBarcodeDetector()
     }
 
@@ -143,6 +143,7 @@ class ScanActivity : DaggerAppCompatActivity(), IScanNavigator {
     }
 
     override fun onDestroy() {
+        viewModel.onDestroy()
         barcodeDetector?.release()
         super.onDestroy()
     }

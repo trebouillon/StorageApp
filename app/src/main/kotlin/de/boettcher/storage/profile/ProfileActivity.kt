@@ -41,6 +41,11 @@ class ProfileActivity : DaggerAppCompatActivity() {
         viewModel.onCreate()
     }
 
+    override fun onDestroy() {
+        viewModel.onDestroy()
+        super.onDestroy()
+    }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         item?.let {
             if (it.itemId == android.R.id.home) {

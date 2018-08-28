@@ -23,8 +23,6 @@ class HomeActivity : DaggerAppCompatActivity(), IHomeNavigator {
         binding.viewModel = this.viewModel
 
         setSupportActionBar(toolbar)
-
-        viewModel.onCreate()
     }
 
     override fun startTakeScan() {
