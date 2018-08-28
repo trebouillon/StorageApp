@@ -1,9 +1,9 @@
 package de.boettcher.storage.scan
 
 import de.boettcher.storage.interactor.auth.IGetUserTokenInteractor
-import de.boettcher.storage.interactor.barcode.BarcodeData
 import de.boettcher.storage.interactor.barcode.ISendBarcodeInteractor
 import de.boettcher.storage.model.Barcode
+import de.boettcher.storage.model.BarcodeData
 import de.boettcher.storage.model.ErrorType
 import de.boettcher.storage.model.ScanType
 import de.boettcher.storage.store.BaseStore

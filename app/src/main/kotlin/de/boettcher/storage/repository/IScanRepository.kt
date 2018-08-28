@@ -1,6 +1,6 @@
 package de.boettcher.storage.repository
 
-import de.boettcher.storage.interactor.barcode.BarcodeData
+import de.boettcher.storage.model.BarcodeData
 import io.reactivex.Single
 
 interface IScanRepository {
