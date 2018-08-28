@@ -7,6 +7,7 @@ import de.boettcher.storage.R
 import de.boettcher.storage.model.BoundingBox
 import de.boettcher.storage.utils.TextUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import javax.inject.Inject
 
@@ -20,6 +21,7 @@ class ScanViewModel @Inject constructor(
     val isOperational = ObservableBoolean(false)
     val isAcceptBarcode = ObservableBoolean(false)
     val scanHint = ObservableField<String>(TextUtils.EMPTY)
+    private val disposable = CompositeDisposable()
 
     fun onSurfaceCreated() {
         scanNavigator.onSurfaceCreated()
@@ -40,17 +42,19 @@ class ScanViewModel @Inject constructor(
     }
 
     private fun initializeStore() {
-        scanStore.subscribe(Consumer {
+        disposable.add(
+            scanStore.subscribe(Consumer {
 
-            when (it) {
-                is ScanState.Idle -> isOperational.set(false)
-                is ScanState.Take -> updateTakeState()
-                is ScanState.Put -> updatePutState(it.barcode)
-                is ScanState.Error -> isOperational.set(false)
-                is ScanState.Finish -> scanNavigator.onBarcodeSend()
-            }
+                when (it) {
+                    is ScanState.Idle -> isOperational.set(false)
+                    is ScanState.Take -> updateTakeState()
+                    is ScanState.Put -> updatePutState(it.barcode)
+                    is ScanState.Error -> isOperational.set(false)
+                    is ScanState.Finish -> scanNavigator.onBarcodeSend()
+                }
 
-        }, AndroidSchedulers.mainThread())
+            }, AndroidSchedulers.mainThread())
+        )
     }
 
     private fun updatePutState(barcode: String?) {
@@ -76,6 +80,10 @@ class ScanViewModel @Inject constructor(
         barcodeArea.get()?.let {
             scanStore.sendBarcode(it.getValue())
         }
+    }
+
+    fun onDestroy() {
+        disposable.dispose()
     }
 
 }

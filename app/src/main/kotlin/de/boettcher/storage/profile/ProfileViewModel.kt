@@ -7,6 +7,7 @@ import de.boettcher.storage.R
 import de.boettcher.storage.ui.ToastDisplayer
 import de.boettcher.storage.utils.TextUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import javax.inject.Inject
 
@@ -19,10 +20,20 @@ class ProfileViewModel @Inject constructor(
     val isLoggedIn = ObservableBoolean(false)
     val title = ObservableField<String>(TextUtils.EMPTY)
     val input = ObservableField<String>(TextUtils.EMPTY)
+    private val disposable = CompositeDisposable()
 
     fun onCreate() {
-        profileStore.subscribe(Consumer(this::onStateChanged), AndroidSchedulers.mainThread())
+        disposable.add(
+            profileStore.subscribe(
+                Consumer(this::onStateChanged),
+                AndroidSchedulers.mainThread()
+            )
+        )
         profileStore.initialize()
+    }
+
+    fun onDestroy() {
+        disposable.dispose()
     }
 
     private fun onStateChanged(it: ProfileState) {
