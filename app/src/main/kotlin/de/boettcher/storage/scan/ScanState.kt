@@ -13,6 +13,6 @@ sealed class ScanState : IState {
 
     data class Put(val userId: String, val barcode: String? = null) : ScanState()
 
-    data class Error(val errorType: ErrorType, val consumed: Boolean) : ScanState()
+    data class Error(val errorType: ErrorType) : ScanState()
 
 }

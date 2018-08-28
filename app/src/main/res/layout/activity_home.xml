@@ -55,6 +55,7 @@
                 android:id="@+id/put"
                 android:layout_height="0dp"
                 android:layout_width="match_parent"
+                android:onClick="@{() -> viewModel.put()}"
                 android:text="@string/action_put"
                 android:textSize="30sp"
                 android:textStyle="bold"
