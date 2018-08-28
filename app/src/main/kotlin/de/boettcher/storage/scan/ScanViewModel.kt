@@ -15,6 +15,7 @@ class ScanViewModel @Inject constructor(
 
     val barcodeArea = ObservableField<BoundingBox>()
     val isOperational = ObservableBoolean(false)
+    val isAcceptBarcode = ObservableBoolean(false)
 
     fun onSurfaceCreated() {
         scanNavigator.onSurfaceCreated()
@@ -32,7 +33,7 @@ class ScanViewModel @Inject constructor(
                 is ScanState.Take -> isOperational.set(true)
                 is ScanState.Put -> isOperational.set(true)
                 is ScanState.Error -> isOperational.set(false)
-                is ScanState.Finish -> scanNavigator.finish()
+                is ScanState.Finish -> scanNavigator.onBarcodeSend()
             }
 
         }, AndroidSchedulers.mainThread())
@@ -43,9 +44,15 @@ class ScanViewModel @Inject constructor(
         }
     }
 
-    fun sendBarcode(boundingBox: BoundingBox) {
+    fun displayBoundingBox(boundingBox: BoundingBox) {
         barcodeArea.set(boundingBox)
-        scanStore.sendBarcode(boundingBox.getValue())
+        isAcceptBarcode.set(true)
+    }
+
+    fun sendBarcode() {
+        barcodeArea.get()?.let {
+            scanStore.sendBarcode(it.getValue())
+        }
     }
 
 }
