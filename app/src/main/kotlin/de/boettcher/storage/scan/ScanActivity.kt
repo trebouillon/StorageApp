@@ -85,10 +85,10 @@ class ScanActivity : DaggerAppCompatActivity(), IScanNavigator {
                 return detections.detectedItems.takeIf {
                     it.size() == 1
                 }?.apply {
-                    viewModel.sendBarcode(
-                        BoundingBox(
-                            cameraSource?.previewSize,
-                            valueAt(0)
+                    viewModel.displayBoundingBox(
+                        boundingBox = BoundingBox(
+                            size = cameraSource?.previewSize,
+                            barcode = valueAt(0)
                         )
                     )
                 }
@@ -115,6 +115,10 @@ class ScanActivity : DaggerAppCompatActivity(), IScanNavigator {
 
     override fun onSurfaceDestroyed() {
         cameraSource?.stop()
+    }
+
+    override fun onBarcodeSend() {
+        finish()
     }
 
     override fun onStart() {
