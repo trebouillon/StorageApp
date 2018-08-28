@@ -18,10 +18,10 @@ class ScanStore @Inject constructor(
     BaseStore<ScanState>(ScanState.Idle), IScanStore {
 
     override fun take() {
-        buildState(initState(), onScanError())
+        buildState(initState(ScanType.TAKE), onScanError())
     }
 
-    private fun initState(): RecreateStateFunction<ScanState> {
+    private fun initState(scanType: ScanType): RecreateStateFunction<ScanState> {
         return object : RecreateStateFunction<ScanState> {
 
             override fun recreate(stateProvider: StateProvider<ScanState>): Observable<ScanState> {
@@ -32,13 +32,18 @@ class ScanStore @Inject constructor(
                 val userId = getUserTokenInteractor.getUserToken().blockingGet()
                 return when (userId) {
                     null -> Observable.just(
-                        ScanState.Error(
-                            ErrorType.AUTHENTICATION_FAILED,
-                            false
-                        )
+                        ScanState.Error(ErrorType.AUTHENTICATION_FAILED)
                     )
-                    else -> Observable.just(ScanState.Take(userId))
+                    else -> initScanState(userId)
                 }
+            }
+
+            fun initScanState(userId: String): Observable<ScanState> {
+                val initState = when (scanType) {
+                    ScanType.TAKE -> ScanState.Take(userId)
+                    ScanType.PUT -> ScanState.Put(userId)
+                }
+                return Observable.just(initState)
             }
 
         }
@@ -51,40 +56,74 @@ class ScanStore @Inject constructor(
                 throwable: Throwable
             ): Observable<ScanState> {
                 // todo check throwable
-                return Observable.just(ScanState.Error(ErrorType.GENERAL, false))
+                return Observable.just(ScanState.Error(ErrorType.GENERAL))
             }
         }
     }
 
     override fun put() {
-        buildState(initState(), onScanError())
+        buildState(initState(ScanType.PUT), onScanError())
     }
 
     override fun sendBarcode(barcode: String) {
+        val sendState = getSendBarcodeState(barcode)
+        buildState(sendState, onScanError())
+    }
 
-        val sendState = object : RecreateStateFunction<ScanState> {
+    private fun getSendBarcodeState(barcode: String): RecreateStateFunction<ScanState> {
+        return object : RecreateStateFunction<ScanState> {
 
             override fun recreate(stateProvider: StateProvider<ScanState>): Observable<ScanState> {
 
                 val currentState = stateProvider.currentState
                 return when (currentState) {
-                    is ScanState.Take -> {
-                        val data = BarcodeData(
-                            ScanType.TAKE,
-                            listOf(Barcode(barcode.resolveStorageType(), barcode)),
-                            currentState.userId
-                        )
-                        sendBarcodeInteractor.send(data).toObservable().map { ScanState.Finish }
-                    }
+                    is ScanState.Take -> handleTakeScan(barcode, currentState)
+                    is ScanState.Put -> handlePutScan(currentState, barcode)
                     else -> Observable.just(ScanState.Finish)
                 }
 
             }
 
         }
+    }
 
-        buildState(sendState, onScanError())
+    private fun handlePutScan(currentState: ScanState.Put, barcode: String): Observable<ScanState> {
+        val stateBarcode = currentState.barcode
+        return when (stateBarcode) {
+            null -> Observable.just(currentState.copy(barcode = barcode))
+            else -> sendPutScanData(barcode, currentState)
+        }
+    }
 
+    private fun sendPutScanData(
+        barcode: String,
+        currentState: ScanState.Put
+    ): Observable<ScanState> {
+        val barcode1 = Barcode(barcode.resolveStorageType(), barcode)
+        val barcode2 = Barcode(
+            currentState.barcode!!.resolveStorageType(), currentState.barcode
+        )
+
+        val data = BarcodeData(
+            scanType = ScanType.PUT,
+            barcodes = listOf(barcode1, barcode2),
+            userId = currentState.userId
+        )
+        return sendBarcodeInteractor.send(data).toObservable()
+            .map { ScanState.Finish }
+    }
+
+    private fun handleTakeScan(
+        barcode: String,
+        currentState: ScanState.Take
+    ): Observable<ScanState> {
+        val data = BarcodeData(
+            scanType = ScanType.TAKE,
+            barcodes = listOf(Barcode(barcode.resolveStorageType(), barcode)),
+            userId = currentState.userId
+        )
+        return sendBarcodeInteractor.send(data).toObservable()
+            .map { ScanState.Finish }
     }
 
 }

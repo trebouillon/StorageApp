@@ -45,12 +45,21 @@ class ScanViewModel @Inject constructor(
             when (it) {
                 is ScanState.Idle -> isOperational.set(false)
                 is ScanState.Take -> updateTakeState()
-                is ScanState.Put -> isOperational.set(true)
+                is ScanState.Put -> updatePutState(it.barcode)
                 is ScanState.Error -> isOperational.set(false)
                 is ScanState.Finish -> scanNavigator.onBarcodeSend()
             }
 
         }, AndroidSchedulers.mainThread())
+    }
+
+    private fun updatePutState(barcode: String?) {
+        isOperational.set(true)
+        val scans = when (barcode) {
+            null -> 1
+            else -> 2
+        }
+        scanHint.set(resources.getString(R.string.scan_hint, scans, 2))
     }
 
     private fun updateTakeState() {
