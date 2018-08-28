@@ -22,5 +22,6 @@
     <string name="scan_error_general">"An unknown error has occurred."</string>
     <string name="scan_error_network">"You have no internet connection. Please check your settings."</string>
     <string name="scan_error_authentication">"You are not logged in. Please enter your userId first on profile page."</string>
+    <string name="scan_accepted">"Scanned Barcode %1$s"</string>
 
 </resources>
