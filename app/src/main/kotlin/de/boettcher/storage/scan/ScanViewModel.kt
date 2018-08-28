@@ -3,6 +3,8 @@ package de.boettcher.storage.scan
 import android.content.res.Resources
 import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
+import android.os.Handler
+import android.os.Looper
 import android.support.annotation.StringRes
 import de.boettcher.storage.R
 import de.boettcher.storage.model.BoundingBox
@@ -25,6 +27,8 @@ class ScanViewModel @Inject constructor(
     val isError = ObservableBoolean(false)
     val scanHint = ObservableField<String>(TextUtils.EMPTY)
     val errorMessage = ObservableField<String>(TextUtils.EMPTY)
+    val isBarcodeScanned = ObservableBoolean(false)
+    val scannedBarcodeText = ObservableField<String>(TextUtils.EMPTY)
     private val disposable = CompositeDisposable()
 
     fun onSurfaceCreated() {
@@ -100,9 +104,20 @@ class ScanViewModel @Inject constructor(
     }
 
     fun sendBarcode() {
+        isBarcodeScanned.set(true)
         barcodeArea.get()?.let {
-            scanStore.sendBarcode(it.getValue())
+            scannedBarcodeText.set(resources.getString(R.string.scan_accepted, it.getValue()))
         }
+
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed({
+
+            isBarcodeScanned.set(false)
+            barcodeArea.get()?.let {
+                scanStore.sendBarcode(it.getValue())
+
+            }
+        }, 1500)
     }
 
     fun onDestroy() {

@@ -98,6 +98,31 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Scan 1/2"/>
 
+            <FrameLayout
+                android:background="@color/gray"
+                android:clickable="false"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:visibility="@{viewModel.isBarcodeScanned}">
+
+                <TextView
+                    android:drawablePadding="4dp"
+                    android:drawableStart="@drawable/ic_check"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="@{viewModel.scannedBarcodeText}"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    tools:text="Scanned"/>
+
+            </FrameLayout>
+
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
