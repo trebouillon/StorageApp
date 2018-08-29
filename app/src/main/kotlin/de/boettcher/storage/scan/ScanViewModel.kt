@@ -21,14 +21,16 @@ class ScanViewModel @Inject constructor(
     private val resources: Resources
 ) {
 
-    val barcodeArea = ObservableField<BoundingBox>()
-    val isOperational = ObservableBoolean(false)
-    val isAcceptBarcode = ObservableBoolean(false)
-    val isError = ObservableBoolean(false)
-    val scanHint = ObservableField<String>(TextUtils.EMPTY)
-    val errorMessage = ObservableField<String>(TextUtils.EMPTY)
-    val isBarcodeScanned = ObservableBoolean(false)
+    val barcodeBoundingBox = ObservableField<BoundingBox>()
     val scannedBarcodeText = ObservableField<String>(TextUtils.EMPTY)
+    val numberOfScansHint = ObservableField<String>(TextUtils.EMPTY)
+    val isBarcodeScanned = ObservableBoolean(false)
+    val isAcceptBarcode = ObservableBoolean(false)
+
+    val isOperational = ObservableBoolean(false)
+    val isError = ObservableBoolean(false)
+    val errorMessage = ObservableField<String>(TextUtils.EMPTY)
+
     private val disposable = CompositeDisposable()
 
     fun onSurfaceCreated() {
@@ -89,23 +91,23 @@ class ScanViewModel @Inject constructor(
             null -> 1
             else -> 2
         }
-        scanHint.set(resources.getString(R.string.scan_hint, scans, 2))
+        numberOfScansHint.set(resources.getString(R.string.scan_hint, scans, 2))
     }
 
     private fun updateTakeState() {
         isOperational.set(true)
         isError.set(false)
-        scanHint.set(resources.getString(R.string.scan_hint, 1, 1))
+        numberOfScansHint.set(resources.getString(R.string.scan_hint, 1, 1))
     }
 
     fun displayBoundingBox(boundingBox: BoundingBox) {
-        barcodeArea.set(boundingBox)
+        barcodeBoundingBox.set(boundingBox)
         isAcceptBarcode.set(true)
     }
 
     fun sendBarcode() {
         isBarcodeScanned.set(true)
-        barcodeArea.get()?.let {
+        barcodeBoundingBox.get()?.let {
             scannedBarcodeText.set(resources.getString(R.string.scan_accepted, it.getValue()))
         }
 
@@ -113,7 +115,7 @@ class ScanViewModel @Inject constructor(
         handler.postDelayed({
 
             isBarcodeScanned.set(false)
-            barcodeArea.get()?.let {
+            barcodeBoundingBox.get()?.let {
                 scanStore.sendBarcode(it.getValue())
 
             }
