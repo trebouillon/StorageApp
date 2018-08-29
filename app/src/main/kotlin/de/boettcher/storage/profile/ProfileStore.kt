@@ -43,7 +43,7 @@ class ProfileStore @Inject constructor(
                 stateProvider: StateProvider<ProfileState>,
                 throwable: Throwable
             ): Observable<ProfileState> {
-                return Observable.just(ProfileState.Error)
+                return Observable.just(stateProvider.currentState).startWith(ProfileState.Error)
             }
 
         }
