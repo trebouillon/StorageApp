@@ -89,6 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="0dp"
                 android:minHeight="48dp"
+                android:onClick="@{() -> viewModel.onSettingsClicked()}"
                 android:src="@drawable/ic_menu_24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/login"

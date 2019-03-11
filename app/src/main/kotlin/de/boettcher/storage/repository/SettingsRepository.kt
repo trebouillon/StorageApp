@@ -11,6 +11,8 @@ interface ISettingsRepository {
 
     fun setEndpoint(endpoint: Endpoint)
 
+    fun removeEndpoint()
+
     companion object {
         const val KEY_ENDPOINT = "key.endpoint"
     }
@@ -20,10 +22,12 @@ interface ISettingsRepository {
 class SettingsRepository @Inject constructor(private val persistenceService: IPersistenceService) :
     ISettingsRepository {
 
-    override val endpoint =
-        persistenceService.get(ISettingsRepository.KEY_ENDPOINT) ?: TextUtils.EMPTY
+    override val endpoint: Endpoint
+        get() = persistenceService.get(ISettingsRepository.KEY_ENDPOINT) ?: TextUtils.EMPTY
 
     override fun setEndpoint(endpoint: Endpoint) =
         persistenceService.put(ISettingsRepository.KEY_ENDPOINT, endpoint)
+
+    override fun removeEndpoint() = persistenceService.remove(ISettingsRepository.KEY_ENDPOINT)
 
 }

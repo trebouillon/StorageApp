@@ -8,4 +8,6 @@ interface IHomeNavigator {
 
     fun login()
 
+    fun openSettings()
+
 }

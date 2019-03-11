@@ -24,13 +24,14 @@ class ProfileActivity : DaggerAppCompatActivity() {
 
     @Inject
     lateinit var viewModel: ProfileViewModel
-    private lateinit var binding: ActivityProfileBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_profile)
-        binding.viewModel = this.viewModel
+        DataBindingUtil.setContentView<ActivityProfileBinding>(this, R.layout.activity_profile)
+            .also {
+                it.viewModel = viewModel
+            }
 
         setSupportActionBar(toolbar)
         supportActionBar?.let {

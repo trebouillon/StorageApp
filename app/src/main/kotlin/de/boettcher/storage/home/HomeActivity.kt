@@ -9,6 +9,7 @@ import de.boettcher.storage.R
 import de.boettcher.storage.databinding.ActivityHomeBinding
 import de.boettcher.storage.profile.ProfileActivity
 import de.boettcher.storage.scan.ScanActivity
+import de.boettcher.storage.settings.SettingsActivity
 import de.boettcher.storage.utils.PermissionUtils
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_home.*
@@ -34,17 +35,13 @@ class HomeActivity : DaggerAppCompatActivity(), IHomeNavigator {
         rxPermissions = RxPermissions(this)
     }
 
-    override fun startTakeScan() {
-        checkCameraPermission { ScanActivity.startTakeScan(this) }
-    }
+    override fun startTakeScan() = checkCameraPermission { ScanActivity.startTakeScan(this) }
 
-    override fun startPutScan() {
-        checkCameraPermission { ScanActivity.startPutScan(this) }
-    }
+    override fun startPutScan() = checkCameraPermission { ScanActivity.startPutScan(this) }
 
-    override fun login() {
-        ProfileActivity.startActivity(this)
-    }
+    override fun login() = ProfileActivity.startActivity(this)
+
+    override fun openSettings() = SettingsActivity.startActivity(this)
 
     private fun checkCameraPermission(onSuccess: () -> Unit) {
         disposable.add(

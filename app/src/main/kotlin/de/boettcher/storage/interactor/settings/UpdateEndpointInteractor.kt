@@ -18,6 +18,9 @@ class UpdateEndpointInteractor @Inject constructor(private val settingsRepositor
 
     override fun getEndpoint(): String = settingsRepository.endpoint
 
-    override fun update(endpoint: Endpoint) = settingsRepository.setEndpoint(endpoint)
+    override fun update(endpoint: Endpoint) = when {
+        endpoint.isBlank() -> settingsRepository.removeEndpoint()
+        else -> settingsRepository.setEndpoint(endpoint)
+    }
 
 }
