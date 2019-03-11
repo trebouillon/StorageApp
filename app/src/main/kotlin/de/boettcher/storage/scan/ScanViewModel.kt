@@ -33,12 +33,12 @@ class ScanViewModel @Inject constructor(
 
     private val disposable = CompositeDisposable()
 
-    fun onSurfaceCreated() {
-        scanNavigator.onSurfaceCreated()
+    fun onSurfaceCreated() = object : Function0<Unit> {
+        override fun invoke() = scanNavigator.onSurfaceCreated()
     }
 
-    fun onSurfaceDestroyed() {
-        scanNavigator.onSurfaceDestroyed()
+    fun onSurfaceDestroyed() = object : Function0<Unit> {
+        override fun invoke() = scanNavigator.onSurfaceDestroyed()
     }
 
     fun startTake() {
