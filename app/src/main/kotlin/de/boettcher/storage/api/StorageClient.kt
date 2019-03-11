@@ -1,17 +1,22 @@
 package de.boettcher.storage.api
 
+import de.boettcher.storage.persistence.IPersistenceService
+import de.boettcher.storage.repository.ISettingsRepository
 import java.net.InetSocketAddress
 import java.net.Socket
 import java.nio.charset.Charset
 import javax.inject.Inject
 
-class StorageClient @Inject constructor() : IStorageClient {
+class StorageClient @Inject constructor(private val persistenceService: IPersistenceService) :
+    IStorageClient {
 
     private val charset = Charset.forName("UTF-8")
 
     override fun send(payload: String): String {
-        val socketAddress =
-            InetSocketAddress(Endpoints.STORAGE_SERVICE_ADDRESS, Endpoints.STORAGE_SERVICE_PORT)
+        val address = persistenceService.get(ISettingsRepository.KEY_ENDPOINT)
+            ?: Endpoints.STORAGE_SERVICE_ADDRESS
+
+        val socketAddress = InetSocketAddress(address, Endpoints.STORAGE_SERVICE_PORT)
 
         val client = Socket()
         client.connect(socketAddress, Endpoints.TIMEOUT)

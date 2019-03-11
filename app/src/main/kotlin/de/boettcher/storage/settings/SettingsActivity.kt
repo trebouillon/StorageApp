@@ -1,4 +1,4 @@
-package de.boettcher.storage.profile
+package de.boettcher.storage.settings
 
 import android.app.Activity
 import android.content.Intent
@@ -7,28 +7,27 @@ import android.os.Bundle
 import android.view.MenuItem
 import dagger.android.support.DaggerAppCompatActivity
 import de.boettcher.storage.R
-import de.boettcher.storage.databinding.ActivityProfileBinding
+import de.boettcher.storage.databinding.ActivitySettingsBinding
 import kotlinx.android.synthetic.main.activity_profile.*
 import javax.inject.Inject
 
-class ProfileActivity : DaggerAppCompatActivity() {
+class SettingsActivity : DaggerAppCompatActivity() {
+
+    @Inject
+    lateinit var viewModel: SettingsViewModel
 
     companion object {
 
         fun startActivity(activity: Activity) {
-            val intent = Intent(activity, ProfileActivity::class.java)
+            val intent = Intent(activity, SettingsActivity::class.java)
             activity.startActivity(intent)
         }
 
     }
 
-    @Inject
-    lateinit var viewModel: ProfileViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        DataBindingUtil.setContentView<ActivityProfileBinding>(this, R.layout.activity_profile)
+        DataBindingUtil.setContentView<ActivitySettingsBinding>(this, R.layout.activity_settings)
             .also {
                 it.viewModel = viewModel
             }
@@ -39,12 +38,7 @@ class ProfileActivity : DaggerAppCompatActivity() {
             it.setDisplayHomeAsUpEnabled(true)
         }
 
-        viewModel.onCreate()
-    }
-
-    override fun onDestroy() {
-        viewModel.onDestroy()
-        super.onDestroy()
+        viewModel.start()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -56,6 +50,11 @@ class ProfileActivity : DaggerAppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroy() {
+        viewModel.stop()
+        super.onDestroy()
     }
 
 }

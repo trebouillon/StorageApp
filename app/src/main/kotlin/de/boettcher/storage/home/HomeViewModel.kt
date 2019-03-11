@@ -4,16 +4,12 @@ import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(private val navigator: IHomeNavigator) {
 
-    fun take() {
-        navigator.startTakeScan()
-    }
+    fun take() = navigator.startTakeScan()
 
-    fun put() {
-        navigator.startPutScan()
-    }
+    fun put() = navigator.startPutScan()
 
-    fun onLoginClicked() {
-        navigator.login()
-    }
+    fun onLoginClicked() = navigator.login()
+
+    fun onSettingsClicked() = navigator.openSettings()
 
 }

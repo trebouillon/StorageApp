@@ -1,14 +1,18 @@
 package de.boettcher.storage.utils
 
 import de.boettcher.storage.model.StorageType
+import java.util.regex.Pattern
 
-fun String.resolveStorageType(): StorageType {
-    val indicator = substring(0..1).toInt()
-
-    return when (indicator) {
-        in 0..1 -> StorageType.ITEM
-        2 -> StorageType.STORE
-        else -> StorageType.ITEM
-    }
+fun String?.resolveStorageType(): StorageType = when {
+    this == null -> StorageType.UNKNOWN
+    BarcodeMatcher.ITEM_MATCHER.matcher(this).matches() -> StorageType.ITEM
+    BarcodeMatcher.STORE_MATCHER.matcher(this).matches() -> StorageType.STORE
+    else -> StorageType.UNKNOWN
 }
 
+object BarcodeMatcher {
+
+    val ITEM_MATCHER: Pattern = Pattern.compile("[0,1]001 [\\d]{8} 0")
+    val STORE_MATCHER: Pattern = Pattern.compile("2001 [\\d]{8} 0")
+
+}

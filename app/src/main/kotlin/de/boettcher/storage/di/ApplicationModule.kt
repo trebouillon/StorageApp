@@ -8,10 +8,9 @@ import dagger.Module
 import dagger.Provides
 import de.boettcher.storage.api.IStorageClient
 import de.boettcher.storage.api.StorageClient
-import de.boettcher.storage.repository.AccountRepository
-import de.boettcher.storage.repository.IAccountRepository
-import de.boettcher.storage.repository.IScanRepository
-import de.boettcher.storage.repository.ScanRepository
+import de.boettcher.storage.persistence.IPersistenceService
+import de.boettcher.storage.persistence.PersistenceService
+import de.boettcher.storage.repository.*
 import javax.inject.Singleton
 
 @Module
@@ -31,6 +30,14 @@ abstract class ApplicationModule {
     @Singleton
     @Binds
     abstract fun bindAccountRepository(accountRepository: AccountRepository): IAccountRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindSettingsRepository(settingsRepository: SettingsRepository): ISettingsRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindPersistenceService(persistenceService: PersistenceService): IPersistenceService
 
     @Module
     companion object {

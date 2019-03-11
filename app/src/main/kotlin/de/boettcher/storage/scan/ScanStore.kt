@@ -7,6 +7,7 @@ import de.boettcher.storage.model.BarcodeData
 import de.boettcher.storage.model.ErrorType
 import de.boettcher.storage.model.ScanType
 import de.boettcher.storage.store.BaseStore
+import de.boettcher.storage.utils.TextUtils
 import de.boettcher.storage.utils.resolveStorageType
 import io.reactivex.Observable
 import java.net.SocketException
@@ -18,9 +19,7 @@ class ScanStore @Inject constructor(
 ) :
     BaseStore<ScanState>(ScanState.Idle), IScanStore {
 
-    override fun take() {
-        buildState(initState(ScanType.TAKE), onScanError())
-    }
+    override fun take() = buildState(initState(ScanType.TAKE), onScanError())
 
     private fun initState(scanType: ScanType): RecreateStateFunction<ScanState> {
         return object : RecreateStateFunction<ScanState> {
@@ -65,9 +64,7 @@ class ScanStore @Inject constructor(
         }
     }
 
-    override fun put() {
-        buildState(initState(ScanType.PUT), onScanError())
-    }
+    override fun put() = buildState(initState(ScanType.PUT), onScanError())
 
     override fun sendBarcode(barcode: String) {
         val sendState = getSendBarcodeState(barcode)
@@ -105,7 +102,8 @@ class ScanStore @Inject constructor(
     ): Observable<ScanState> {
         val barcode1 = Barcode(barcode.resolveStorageType(), barcode)
         val barcode2 = Barcode(
-            currentState.barcode!!.resolveStorageType(), currentState.barcode
+            storageType = currentState.barcode.resolveStorageType(),
+            code = currentState.barcode ?: TextUtils.EMPTY
         )
 
         val data = BarcodeData(
@@ -113,8 +111,7 @@ class ScanStore @Inject constructor(
             barcodes = listOf(barcode1, barcode2),
             userId = currentState.userId
         )
-        return sendBarcodeInteractor.send(data).toObservable()
-            .map { ScanState.Finish }
+        return sendBarcodeInteractor.send(data).toObservable().map { ScanState.Finish }
     }
 
     private fun handleTakeScan(
@@ -126,8 +123,7 @@ class ScanStore @Inject constructor(
             barcodes = listOf(Barcode(barcode.resolveStorageType(), barcode)),
             userId = currentState.userId
         )
-        return sendBarcodeInteractor.send(data).toObservable()
-            .map { ScanState.Finish }
+        return sendBarcodeInteractor.send(data).toObservable().map { ScanState.Finish }
     }
 
 }

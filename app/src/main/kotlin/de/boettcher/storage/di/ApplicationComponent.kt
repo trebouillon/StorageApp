@@ -3,6 +3,7 @@ package de.boettcher.storage.di
 import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
+import dagger.android.AndroidInjectionModule
 import dagger.android.AndroidInjector
 import de.boettcher.storage.StorageApplication
 import javax.inject.Singleton
