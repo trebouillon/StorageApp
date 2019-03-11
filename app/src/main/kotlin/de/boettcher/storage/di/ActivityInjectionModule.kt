@@ -8,6 +8,8 @@ import de.boettcher.storage.profile.ProfileActivity
 import de.boettcher.storage.profile.ProfileModule
 import de.boettcher.storage.scan.ScanActivity
 import de.boettcher.storage.scan.ScanModule
+import de.boettcher.storage.settings.SettingsActivity
+import de.boettcher.storage.settings.SettingsModule
 
 @Module
 abstract class ActivityInjectionModule {
@@ -20,5 +22,8 @@ abstract class ActivityInjectionModule {
 
     @ContributesAndroidInjector(modules = [ScanModule::class])
     abstract fun contributeScanActivityInjector(): ScanActivity
+
+    @ContributesAndroidInjector(modules = [SettingsModule::class])
+    abstract fun contributeSettingsActivityInjector(): SettingsActivity
 
 }
